@@ -2,7 +2,7 @@
 * This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 * Client side routing: `react-router-dom`
 * State management: `redux`
-* Side-effect (API) handling: `redux-thunk`
+* Side-effect (API async actions) handling: `redux-thunk`
 * DevTools: `redux-logger`, `redux-devtools-extension`
 
 ## Getting Started

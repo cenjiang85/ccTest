@@ -63,6 +63,23 @@ export const fetchDeliveryItem = (id) => dispatch => {
         .then(json => dispatch(receiveDeliveryItem(id, json)))
 };
 
+const shouldFetchDrivers = (state) => {
+    const { drivers } = state;
+
+    if (drivers.isFetching) {
+        return false
+    }
+
+    return !drivers.items;
+};
+
+export const fetchDriversIfNeeded = () => (dispatch, getState) => {
+    if (shouldFetchDrivers(getState())) {
+        return dispatch(fetchDrivers());
+    }
+    return Promise.resolve();
+};
+
 export const addDelivery = (item) => {
     return {
         type: ADD_DELIVERY,

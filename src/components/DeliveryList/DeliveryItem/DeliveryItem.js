@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const DeliveryItem = ({ item }) => {
     const { id, date, name, driver_name } = item;
@@ -9,8 +10,8 @@ const DeliveryItem = ({ item }) => {
             <td>{name}</td>
             <td>{driver_name}</td>
             <td className="text-right">
-                <a className="btn btn-outline-primary" href="update.php?id=<?php echo $id; ?>">Edit</a>&nbsp;
-                <a className="btn btn-outline-danger" href="delete.php?id=<?php echo $id; ?>">Delete</a>
+                <Link className="btn btn-outline-primary" to={`update?id=${id}`}>Edit</Link>&nbsp;
+                <Link className="btn btn-outline-danger" to={`delete?id=${id}`}>Delete</Link>
             </td>
         </tr>
     );

@@ -8,7 +8,7 @@ import {
     RECEIVE_DELIVERY_ITEM
 } from '../actions';
 
-const drivers = (state = { isFetching: false, items: {} }, action) => {
+const drivers = (state = { isFetching: false, items: null }, action) => {
     switch (action.type) {
         case REQUEST_DRIVERS:
             return {
@@ -26,7 +26,7 @@ const drivers = (state = { isFetching: false, items: {} }, action) => {
     }
 };
 
-const deliveries = (state = { isFetching: false, items: {} }, action) => {
+const deliveries = (state = { isFetching: false, items: null }, action) => {
     switch (action.type) {
         case REQUEST_DELIVERIES:
             return {
@@ -40,12 +40,10 @@ const deliveries = (state = { isFetching: false, items: {} }, action) => {
                 items: action.deliveries
             };
         case RECEIVE_DELIVERY_ITEM:
-            const { items } = state;
             return {
                 ...state,
                 isFetching: false,
                 items: {
-                    ...items,
                     [action.id]: action.item
                 }
             };
