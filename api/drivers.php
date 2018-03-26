@@ -8,6 +8,8 @@ $errors = [];
 
 $body = json_decode(file_get_contents('php://input'));
 
+header('Access-Control-Allow-Origin: *');
+
 switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
         if (isset($_GET['id'])) {
@@ -38,6 +40,5 @@ if (count($errors) > 0) {
 }
 
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
 
 echo json_encode($response);

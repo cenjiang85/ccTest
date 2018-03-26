@@ -125,6 +125,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
         }
 
         break;
+	case 'OPTIONS':
+		header('HTTP/1.0 200 OK');
+		break;
     default:
         header('HTTP/1.0 405 Method Not Allowed');
 
@@ -139,5 +142,7 @@ if (count($errors) > 0) {
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Headers: *');
+header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
 
 echo json_encode($response);

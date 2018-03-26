@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import { fetchDeliveries, fetchDriversIfNeeded } from '../../actions/index';
+import { fetchDeliveries, fetchDriversIfNeeded, resetForm } from '../../actions/index';
 import { Main } from '../Main/Main';
 import { DeliveryItem } from './DeliveryItem/DeliveryItem';
 
@@ -8,6 +8,7 @@ class DeliveryList extends Component {
 
     componentDidMount = () => {
         const { dispatch } = this.props;
+        dispatch(resetForm());
         dispatch(fetchDriversIfNeeded())
             .then(dispatch(fetchDeliveries()));
     };

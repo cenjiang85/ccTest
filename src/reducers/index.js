@@ -4,8 +4,11 @@ import {
     RECEIVE_DELIVERIES,
     REQUEST_DRIVERS,
     RECEIVE_DRIVERS,
-    REQUEST_DELIVERY,
-    RECEIVE_DELIVERY_ITEM
+    RECEIVE_DELIVERY_ITEM,
+    SUBMIT_DELIVERY_FORM,
+    SET_SUBMIT_SUCCESS,
+    SET_SUBMIT_ERROR,
+    RESET_FORM
 } from '../actions';
 
 const drivers = (state = { isFetching: false, items: null }, action) => {
@@ -52,7 +55,39 @@ const deliveries = (state = { isFetching: false, items: null }, action) => {
     }
 };
 
+const form = (state = { submitStatus: null, errors: null }, action) => {
+    switch (action.type) {
+        case SUBMIT_DELIVERY_FORM:
+            return {
+                ...state,
+                submitStatus: 'IN_PROGRESS',
+                error: null
+            };
+        case SET_SUBMIT_SUCCESS:
+            return {
+                ...state,
+                submitStatus: 'SUCCESS',
+                error: null
+            };
+        case SET_SUBMIT_ERROR:
+            return {
+                ...state,
+                submitStatus: 'FAILED',
+                errors: action.errors
+            };
+        case RESET_FORM:
+            return {
+                ...state,
+                submitStatus: null,
+                errors: null
+            };
+        default:
+            return state;
+    }
+};
+
 export const rootReducer = combineReducers({
     deliveries,
-    drivers
+    drivers,
+    form
 });
