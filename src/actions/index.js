@@ -77,8 +77,10 @@ export const fetchDrivers = () => dispatch => {
 export const fetchDeliveryItem = (id) => dispatch => {
     dispatch(requestDeliveries());
     return fetch(`${DELIVERIES_API_URL}?id=${id}`)
+        .then(resp => handleErrors(resp, dispatch))
         .then(resp => resp.json())
-        .then(json => dispatch(receiveDeliveryItem(id, json)));
+        .then(json => dispatch(receiveDeliveryItem(id, json)))
+        .catch(error => console.log(error));
 };
 
 export const addDeliveryItem = (item) => dispatch => {

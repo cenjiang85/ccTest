@@ -1,78 +1,65 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import qsParser from 'querystring';
-import { fetchDeliveryItem, fetchDriversIfNeeded, updateDeliveryItem } from '../../actions/index';
+import { fetchDriversIfNeeded, addDeliveryItem } from '../../actions/index';
 import { Main } from '../Main/Main';
 
-class UpdateDelivery extends Component {
+class AddDelivery extends Component {
 
     constructor(props) {
         super(props);
-        this.id = qsParser.parse(props.location.search.substr(1)).id;
         this.state = {
-            selectedDriverId: null
-        }
+            name: '',
+            date: '',
+            driver_id: ''
+        };
     }
 
     componentDidMount = () => {
         const { dispatch } = this.props;
-        dispatch(fetchDriversIfNeeded())
-            .then(dispatch(fetchDeliveryItem(this.id)))
+        dispatch(fetchDriversIfNeeded());
     };
 
     onSubmit = (event) => {
         event.preventDefault();
-        this.props.dispatch(updateDeliveryItem(this.id, this.getSelectedDriverId()));
+        this.props.dispatch(addDeliveryItem(this.state));
     };
 
-    onChange = (event) => {
+    onChange = (field) => (event) => {
         this.setState({
-            selectedDriverId: event.target.value
+            [field]: event.target.value
         });
     };
 
-    getSelectedDriverId = () => {
-        const { item } = this.props;
-        const { selectedDriverId } = this.state;
-        return selectedDriverId === null ? item.driver_id : selectedDriverId;
-    };
-
     render = () => {
-        const { item, drivers, submitStatus, errors } = this.props;
+        const { drivers, submitStatus, errors = {} } = this.props;
         const isInvalidClass = (errors && errors.driver_id) ? 'is-invalid' : '';
-
-        if (!this.id) {
-            return <Main title="Missing delivery ID" />
-        }
-
-        if (!item) {
-            return <Main title="Invalid delivery ID" />
-        }
 
         if (submitStatus === 'SUCCESS') {
             return <Redirect push to="/"/>
         }
 
         return (
-            <Main title="Edit Delivery">
+            <Main title="Create Delivery">
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group row">
                         <label htmlFor="deliveryDate" className="col-sm-2 col-form-label">Date</label>
                         <div className="col-sm-10">
-                            <input type="text" className="form-control" placeholder={item.date} readOnly />
+                            <input type="text" className={`form-control ${errors.date && 'is-invalid'}`} id="deliveryDate" name="date" onChange={this.onChange('date')} />
+                            {submitStatus === 'FAILED' && <div className="invalid-feedback">{errors.date}</div>}
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="deliveryName" className="col-sm-2 col-form-label">Name</label>
                         <div className="col-sm-10">
-                            <input type="text" className="form-control" placeholder={item.name} readOnly />
+                            <input type="text" className={`form-control ${errors.name && 'is-invalid'}`} id="deliveryName" name="name" onChange={this.onChange('name')} />
+                            {submitStatus === 'FAILED' && <div className="invalid-feedback">{errors.name}</div>}
                         </div>
                     </div>
                     <div className="form-group row">
                         <label htmlFor="deliveryDriver" className="col-sm-2 col-form-label">Driver</label>
                         <div className="col-sm-10">
-                            <select className={`form-control ${isInvalidClass}`} value={this.getSelectedDriverId()} name="driver_id" onChange={this.onChange}>
+                            <select className={`form-control ${isInvalidClass}`} value={this.state.driver_id} name="driver_id" onChange={this.onChange('driver_id')}>
                                 <option value="">- Select One -</option>
                                 {
                                     Object.keys(drivers).map((driverId) => {
@@ -82,9 +69,7 @@ class UpdateDelivery extends Component {
                                 }
 
                             </select>
-                            {submitStatus === 'FAILED'
-                                ? <div className="invalid-feedback">{errors && errors.driver_id}</div>
-                                : null}
+                            {submitStatus === 'FAILED' && <div className="invalid-feedback">{errors.driver_id}</div>}
 
                         </div>
                     </div>
@@ -95,16 +80,13 @@ class UpdateDelivery extends Component {
     };
 }
 
-const mapStateToProps = (state, props) => {
-    const { deliveries, drivers, form: { submitStatus, errors } } = state;
-    const { id } = qsParser.parse(props.location.search.substr(1));
-
+const mapStateToProps = (state) => {
+    const {  drivers, form: { submitStatus, errors } } = state;
     return {
-        item: deliveries.items ? deliveries.items[id] : null,
         drivers: drivers.items || {},
         submitStatus,
         errors
     }
 };
 
-export default connect(mapStateToProps)(UpdateDelivery);
+export default connect(mapStateToProps)(AddDelivery);

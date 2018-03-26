@@ -55,7 +55,7 @@ const deliveries = (state = { isFetching: false, items: null }, action) => {
     }
 };
 
-const form = (state = { submitStatus: null, errors: null }, action) => {
+const form = (state = { submitStatus: null, errors: {} }, action) => {
     switch (action.type) {
         case SUBMIT_DELIVERY_FORM:
             return {
@@ -79,7 +79,7 @@ const form = (state = { submitStatus: null, errors: null }, action) => {
             return {
                 ...state,
                 submitStatus: null,
-                errors: null
+                errors: {}
             };
         default:
             return state;
