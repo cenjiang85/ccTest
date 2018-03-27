@@ -2,10 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { fetchDeliveries, fetchDriversIfNeeded, resetForm } from '../../actions/index';
 import { Main } from '../Main/Main';
-import { DeliveryItem } from './DeliveryItem/DeliveryItem';
+import { DeliveryItem } from '../DeliveryItem/DeliveryItem';
+import { getDeliveriesWithDriverName, isFetching } from '../../selectors';
 
 class DeliveryList extends Component {
 
+    /**
+     * Fetch the drivers and deliveries list when mount,
+     * also reset the form state
+     */
     componentDidMount = () => {
         const { dispatch } = this.props;
         dispatch(resetForm());
@@ -41,27 +46,9 @@ class DeliveryList extends Component {
 }
 
 const mapStateToProps = (state) => {
-    const { deliveries, drivers } = state;
-
-    if (!deliveries.items) {
-        return {
-            items: [],
-            isFetching: true
-        }
-    }
-
-    const items = Object.keys(deliveries.items).map((key) => {
-        const item = deliveries.items[key];
-        return {
-            id: key,
-            ...item,
-            driver_name: drivers.items[item.driver_id].name
-        }
-    });
-
     return {
-        items,
-        isFetching: drivers.isFetching || deliveries.isFetching
+        items: getDeliveriesWithDriverName(state),
+        isFetching: isFetching(state)
     };
 };
 

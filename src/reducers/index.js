@@ -11,6 +11,12 @@ import {
     RESET_FORM
 } from '../actions';
 
+/**
+ * Drivers reducer
+ * @param {Object} state - initialState of drivers list
+ * @param {Object} action - the action object
+ * @returns {Object} the updated state
+ */
 const drivers = (state = { isFetching: false, items: null }, action) => {
     switch (action.type) {
         case REQUEST_DRIVERS:
@@ -29,6 +35,12 @@ const drivers = (state = { isFetching: false, items: null }, action) => {
     }
 };
 
+/**
+ * Deliveries reducer
+ * @param {Object} state - initialState of deliveries list
+ * @param {Object} action - the action object
+ * @returns {Object} the updated state
+ */
 const deliveries = (state = { isFetching: false, items: null }, action) => {
     switch (action.type) {
         case REQUEST_DELIVERIES:
@@ -55,6 +67,12 @@ const deliveries = (state = { isFetching: false, items: null }, action) => {
     }
 };
 
+/**
+ * Form reducer
+ * @param {Object} state - initialState of the form
+ * @param {Object} action - the action object
+ * @returns {Object} the updated form state
+ */
 const form = (state = { submitStatus: null, errors: {} }, action) => {
     switch (action.type) {
         case SUBMIT_DELIVERY_FORM:

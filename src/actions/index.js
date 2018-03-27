@@ -1,3 +1,4 @@
+// Constants that defines action types used in this app
 export const REQUEST_DELIVERIES = 'REQUEST_DELIVERIES';
 export const RECEIVE_DELIVERIES = 'RECEIVE_DELIVERIES';
 export const REQUEST_DRIVERS = 'REQUEST_DRIVERS';
@@ -8,9 +9,13 @@ export const SET_SUBMIT_SUCCESS = 'SET_SUBMIT_SUCCESS';
 export const SET_SUBMIT_ERROR = 'SET_SUBMIT_ERROR';
 export const RESET_FORM = 'RESET_FORM';
 
+
+// Constants store the endpoint URLs
 const DELIVERIES_API_URL = 'http://localhost:8000/api/deliveries.php';
 const DRIVERS_API_URL = 'http://localhost:8000/api/drivers.php';
 
+
+// General action creators
 const requestDeliveries = () => {
     return { type: REQUEST_DELIVERIES };
 };
@@ -60,6 +65,8 @@ export const resetForm = () => {
     return { type: RESET_FORM }
 };
 
+
+// Async action creators that handles Side-Effects, i.e. APIs / Error handling / logging
 export const fetchDeliveries = () => dispatch => {
     dispatch(requestDeliveries());
     return fetch(DELIVERIES_API_URL)
@@ -125,6 +132,7 @@ const handleErrors = (resp, dispatch) => {
     return resp;
 };
 
+// Since driver list never change, once they get loaded in the app, we should never re-fetch it again
 const shouldFetchDrivers = (state) => {
     const { drivers } = state;
 

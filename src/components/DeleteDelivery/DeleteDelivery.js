@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import qsParser from 'querystring';
 import { fetchDeliveryItem, deleteDeliveryItem } from '../../actions';
+import { getSubmitStatus, getDeliveryById } from '../../selectors';
+import { getIdFromUrl } from '../../utils';
 import { Main } from '../Main/Main';
 
 class DeleteDelivery extends Component {
 
     constructor(props) {
         super(props);
-        this.id = qsParser.parse(props.location.search.substr(1)).id;
+        this.id = getIdFromUrl(props);
     }
 
     componentDidMount = () => {
@@ -49,12 +50,9 @@ class DeleteDelivery extends Component {
 }
 
 const mapStateToProps = (state, props) => {
-    const {  deliveries, form: { submitStatus } } = state;
-    const { id } = qsParser.parse(props.location.search.substr(1));
-
     return {
-        item: deliveries.items ? deliveries.items[id] : null,
-        submitStatus
+        item: getDeliveryById(state, getIdFromUrl(props)),
+        submitStatus: getSubmitStatus(state)
     }
 };
 

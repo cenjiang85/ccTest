@@ -3,7 +3,9 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
-import { fetchDriversIfNeeded, addDeliveryItem } from '../../actions';
+
+import { addDeliveryItem, fetchDriversIfNeeded } from '../../actions';
+import { getDrivers, getErrors, getSubmitStatus } from '../../selectors';
 import { Main } from '../Main/Main';
 
 class AddDelivery extends Component {
@@ -24,9 +26,11 @@ class AddDelivery extends Component {
 
     onSubmit = (event) => {
         event.preventDefault();
+
+        const { date } = this.state;
         this.props.dispatch(addDeliveryItem({
             ...this.state,
-            date: this.state.date.format('YYYY-MM-DD')
+            date: date ? date.format('YYYY-MM-DD') : ''
         }));
     };
 
@@ -42,7 +46,6 @@ class AddDelivery extends Component {
 
     render = () => {
         const { drivers, submitStatus, errors = {} } = this.props;
-        const isInvalidClass = (errors && errors.driver_id) ? 'is-invalid' : '';
 
         if (submitStatus === 'SUCCESS') {
             return <Redirect push to="/"/>
@@ -74,7 +77,7 @@ class AddDelivery extends Component {
                     <div className="form-group row">
                         <label htmlFor="deliveryDriver" className="col-sm-2 col-form-label">Driver</label>
                         <div className="col-sm-10">
-                            <select className={`form-control ${isInvalidClass}`} value={this.state.driver_id} name="driver_id" onChange={this.onChange('driver_id')}>
+                            <select className={`form-control ${errors.driver_id && 'is-invalid'}`} value={this.state.driver_id} name="driver_id" onChange={this.onChange('driver_id')}>
                                 <option value="">- Select One -</option>
                                 {
                                     Object.keys(drivers).map((driverId) => {
@@ -96,11 +99,10 @@ class AddDelivery extends Component {
 }
 
 const mapStateToProps = (state) => {
-    const {  drivers, form: { submitStatus, errors } } = state;
     return {
-        drivers: drivers.items || {},
-        submitStatus,
-        errors
+        drivers: getDrivers(state),
+        submitStatus: getSubmitStatus(state),
+        errors: getErrors(state)
     }
 };
 

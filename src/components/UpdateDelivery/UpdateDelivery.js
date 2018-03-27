@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import qsParser from 'querystring';
-import { fetchDeliveryItem, fetchDriversIfNeeded, updateDeliveryItem } from '../../actions/index';
+import { fetchDeliveryItem, fetchDriversIfNeeded, updateDeliveryItem } from '../../actions';
+import { getDeliveryById, getDrivers, getErrors, getSubmitStatus } from '../../selectors';
+import { getIdFromUrl } from '../../utils';
 import { Main } from '../Main/Main';
 
 class UpdateDelivery extends Component {
 
     constructor(props) {
         super(props);
-        this.id = qsParser.parse(props.location.search.substr(1)).id;
+        this.id = getIdFromUrl(props);
         this.state = {
             selectedDriverId: null
         }
@@ -40,7 +41,6 @@ class UpdateDelivery extends Component {
 
     render = () => {
         const { item, drivers, submitStatus, errors } = this.props;
-        const isInvalidClass = (errors && errors.driver_id) ? 'is-invalid' : '';
 
         if (!this.id) {
             return <Main title="Missing delivery ID" />
@@ -72,7 +72,7 @@ class UpdateDelivery extends Component {
                     <div className="form-group row">
                         <label htmlFor="deliveryDriver" className="col-sm-2 col-form-label">Driver</label>
                         <div className="col-sm-10">
-                            <select className={`form-control ${isInvalidClass}`} value={this.getSelectedDriverId()} name="driver_id" onChange={this.onChange}>
+                            <select className={`form-control ${errors.driver_id && 'is-invalid'}`} value={this.getSelectedDriverId()} name="driver_id" onChange={this.onChange}>
                                 <option value="">- Select One -</option>
                                 {
                                     Object.keys(drivers).map((driverId) => {
@@ -96,14 +96,11 @@ class UpdateDelivery extends Component {
 }
 
 const mapStateToProps = (state, props) => {
-    const { deliveries, drivers, form: { submitStatus, errors } } = state;
-    const { id } = qsParser.parse(props.location.search.substr(1));
-
     return {
-        item: deliveries.items ? deliveries.items[id] : null,
-        drivers: drivers.items || {},
-        submitStatus,
-        errors
+        item: getDeliveryById(state, getIdFromUrl(props)),
+        drivers: getDrivers(state),
+        submitStatus: getSubmitStatus(state),
+        errors: getErrors(state)
     }
 };
 
