@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { fetchDriversIfNeeded, addDeliveryItem } from '../../actions/index';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker-cssmodules.css';
+import { fetchDriversIfNeeded, addDeliveryItem } from '../../actions';
 import { Main } from '../Main/Main';
 
 class AddDelivery extends Component {
@@ -10,7 +12,7 @@ class AddDelivery extends Component {
         super(props);
         this.state = {
             name: '',
-            date: '',
+            date: null,
             driver_id: ''
         };
     }
@@ -22,13 +24,20 @@ class AddDelivery extends Component {
 
     onSubmit = (event) => {
         event.preventDefault();
-        this.props.dispatch(addDeliveryItem(this.state));
+        this.props.dispatch(addDeliveryItem({
+            ...this.state,
+            date: this.state.date.format('YYYY-MM-DD')
+        }));
     };
 
     onChange = (field) => (event) => {
         this.setState({
             [field]: event.target.value
         });
+    };
+
+    onDateChange = (date) => {
+        this.setState({ date });
     };
 
     render = () => {
@@ -42,10 +51,16 @@ class AddDelivery extends Component {
         return (
             <Main title="Create Delivery">
                 <form onSubmit={this.onSubmit}>
-                    <div className="form-group row">
+                    <div className={`form-group row ${errors.date && 'is-invalid'}`}>
                         <label htmlFor="deliveryDate" className="col-sm-2 col-form-label">Date</label>
                         <div className="col-sm-10">
-                            <input type="text" className={`form-control ${errors.date && 'is-invalid'}`} id="deliveryDate" name="date" onChange={this.onChange('date')} />
+                            <DatePicker
+                                className={`form-control ${errors.date && 'is-invalid'}`}
+                                dateFormat="YYYY-MM-DD"
+                                selected={this.state.date}
+                                onChange={this.onDateChange}
+                                id="deliveryDate"
+                                name="date"/>
                             {submitStatus === 'FAILED' && <div className="invalid-feedback">{errors.date}</div>}
                         </div>
                     </div>

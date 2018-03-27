@@ -8,3 +8,12 @@ body {
   border-bottom: .05rem solid #e5e5e5;
   margin-bottom: 2rem;
 }
+
+.react-datepicker-wrapper,
+.react-datepicker__input-container {
+  width: 100%;
+}
+
+.form-group.is-invalid .invalid-feedback{
+  display: block;
+}
