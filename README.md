@@ -3,6 +3,7 @@
 * Client side routing: `react-router-dom`
 * State management: `redux`
 * Side-effect (API async actions) handling: `redux-thunk`
+* DatePicker component: `react-datepicker` and `Moment`
 * DevTools: `redux-logger`, `redux-devtools-extension`
 
 ## Getting Started
